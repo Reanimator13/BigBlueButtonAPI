@@ -1,13 +1,13 @@
-﻿using BigBlueButton.Requests;
-using BigBlueButton.Responses;
-using BigBlueButton.Utils;
+﻿using BigBlueButtonAPI.Requests;
+using BigBlueButtonAPI.Responses;
+using BigBlueButtonAPI.Utils;
 using BigBlueButtonAPI.Requests;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace BigBlueButton;
+namespace BigBlueButtonAPI;
 
 public class API : IAPI
 {

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace BigBlueButton.Utils;
+namespace BigBlueButtonAPI.Utils;
 
 public static class SHA1
 {

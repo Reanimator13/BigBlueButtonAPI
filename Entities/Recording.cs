@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace BigBlueButton.Entities;
+namespace BigBlueButtonAPI.Entities;
 
 public class Recording
 {
@@ -33,7 +33,7 @@ public class Recording
 
     [XmlElement("participants")]
     public int Participants { get; set; }
-
+    //TODO: Add more metadata
     // <metadata>
 
     // <playback>

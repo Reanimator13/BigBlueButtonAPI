@@ -1,4 +1,4 @@
-﻿namespace BigBlueButton.Requests
+﻿namespace BigBlueButtonAPI.Requests
 {
     public class IsMeetingRunningRequest
     {

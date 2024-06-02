@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
-using BigBlueButton.Responses;
+using BigBlueButtonAPI.Responses;
 
-namespace BigBlueButton.Entities;
+namespace BigBlueButtonAPI.Entities;
 
 public class Meeting : BaseResponse
 {

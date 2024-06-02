@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Xml.Serialization;
 
-namespace BigBlueButton.Responses;
+namespace BigBlueButtonAPI.Responses;
 
 [Serializable]
 [DesignerCategory("code")]

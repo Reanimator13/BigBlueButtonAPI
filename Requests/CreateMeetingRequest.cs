@@ -1,6 +1,6 @@
-﻿using BigBlueButton.Entities;
+﻿using BigBlueButtonAPI.Entities;
 
-namespace BigBlueButton.Requests;
+namespace BigBlueButtonAPI.Requests;
 
 public class CreateMeetingRequest
 {

@@ -1,4 +1,4 @@
-﻿namespace BigBlueButton.Entities;
+﻿namespace BigBlueButtonAPI.Entities;
 
 public class RecordingTrack
 {

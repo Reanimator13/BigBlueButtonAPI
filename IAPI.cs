@@ -1,9 +1,8 @@
-﻿using System.Threading.Tasks;
-using BigBlueButton.Requests;
-using BigBlueButton.Responses;
-using BigBlueButtonAPI.Requests;
+﻿using BigBlueButtonAPI.Requests;
+using BigBlueButtonAPI.Responses;
+using System.Threading.Tasks;
 
-namespace BigBlueButton;
+namespace BigBlueButtonAPI;
 
 public interface IAPI
 {

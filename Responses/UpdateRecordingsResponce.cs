@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace BigBlueButton.Responses;
+namespace BigBlueButtonAPI.Responses;
 
 public class UpdateRecordingsResponce : BaseResponse
 {

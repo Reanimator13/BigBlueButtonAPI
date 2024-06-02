@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Xml.Serialization;
 
-namespace BigBlueButton.Utils;
+namespace BigBlueButtonAPI.Utils;
 
 public static class XmlSerializerHelper
 {

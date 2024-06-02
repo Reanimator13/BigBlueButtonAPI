@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Web;
 
-namespace BigBlueButton.Utils;
+namespace BigBlueButtonAPI.Utils;
 
 public class QueryStringBuilder : Dictionary<string, string>
 {
