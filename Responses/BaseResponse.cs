@@ -15,7 +15,7 @@ public class BaseResponse
     public string Version { get; set; }
 
     [XmlElement("returncode")]
-    public string ReturnCode { get; set; }
+    public ReturnCode ReturnCode { get; set; }
 
     [XmlElement("messageKey")]
     public string MessageKey { get; set; }

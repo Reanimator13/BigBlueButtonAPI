@@ -1,6 +1,6 @@
-﻿using BigBlueButtonAPI.Requests;
+﻿using System.Threading.Tasks;
+using BigBlueButtonAPI.Requests;
 using BigBlueButtonAPI.Responses;
-using System.Threading.Tasks;
 
 namespace BigBlueButtonAPI;
 

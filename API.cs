@@ -1,14 +1,16 @@
-﻿using BigBlueButtonAPI.Requests;
-using BigBlueButtonAPI.Responses;
-using BigBlueButtonAPI.Utils;
-using BigBlueButtonAPI.Requests;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using BigBlueButtonAPI.Requests;
+using BigBlueButtonAPI.Responses;
+using BigBlueButtonAPI.Utils;
 
 namespace BigBlueButtonAPI;
 
+/// <summary>
+/// The BigBlueButton API (For version 2.7 or lower).
+/// </summary>
 public class API : IAPI
 {
     private readonly string _url;
@@ -49,6 +51,8 @@ public class API : IAPI
             throw new ArgumentException("Name and MeetingID cannot be null or whitespace.");
         }
 
+        string metaData = MetaDataConvertor.MetaDataToString(request.Meta);
+
         var parameters = new Dictionary<string, string>
         {
             { "name", request.Name },
@@ -72,7 +76,7 @@ public class API : IAPI
                 request.BreakoutRoomsPrivateChatEnabled.ToString() ?? string.Empty
             },
             { "breakoutRoomsRecord", request.BreakoutRoomsRecord.ToString() ?? string.Empty },
-            { "meta", request.Meta.ToString() ?? string.Empty },
+            { "meta", metaData ?? string.Empty },
             { "moderatorOnlyMessage", request.ModeratorOnlyMessage ?? string.Empty },
             { "autoStartRecording", request.AutoStartRecording.ToString() ?? string.Empty },
             {
@@ -153,7 +157,33 @@ public class API : IAPI
                 "meetingExpireWhenLastUserLeftInMinutes",
                 request.MeetingExpireWhenLastUserLeftInMinutes.ToString() ?? string.Empty
             },
-            //TODO: Add other parameters
+            {
+                "meetingExpireWhenLastUserLeftInMinutes",
+                request.MeetingExpireWhenLastUserLeftInMinutes.ToString() ?? string.Empty
+            },
+            { "groups", request.Groups ?? string.Empty },
+            { "logo", request.Logo ?? string.Empty },
+            { "disabledFeatures", request.DisabledFeatures ?? string.Empty },
+            { "disabledFeaturesExclude", request.DisabledFeaturesExclude ?? string.Empty },
+            {
+                "preUploadedPresentationOverrideDefault",
+                request.PreUploadedPresentationOverrideDefault.ToString() ?? string.Empty
+            },
+            { "notifyRecordingIsOn", request.NotifyRecordingIsOn.ToString() ?? string.Empty },
+            {
+                "presentationUploadExternalUrl",
+                request.PresentationUploadExternalUrl ?? string.Empty
+            },
+            {
+                "presentationUploadExternalDescription",
+                request.PresentationUploadExternalDescription ?? string.Empty
+            },
+            {
+                "recordFullDurationMedia",
+                request.RecordFullDurationMedia.ToString() ?? string.Empty
+            },
+            { "preUploadedPresentation", request.PreUploadedPresentation ?? string.Empty },
+            { "preUploadedPresentationName", request.PreUploadedPresentationName ?? string.Empty },
         };
 
         return await GetResponseAsync<T>("create", parameters);
@@ -265,12 +295,14 @@ public class API : IAPI
     public async Task<T> GetRecordingsAsync<T>(GetRecordingsRequest request)
         where T : BaseResponse
     {
+        string metaData = MetaDataConvertor.MetaDataToString(request.Meta);
+
         var parameters = new Dictionary<string, string>
         {
             { "meetingID", request.MeetingID ?? string.Empty },
             { "recordID", request.RecordID ?? string.Empty },
             { "state", request.State ?? string.Empty },
-            { "meta", request.Meta.ToString() ?? string.Empty },
+            { "meta", metaData ?? string.Empty },
             { "offset", request.Offset.ToString() ?? string.Empty },
             { "limit", request.Limit.ToString() ?? string.Empty }
         };
@@ -325,10 +357,12 @@ public class API : IAPI
             throw new ArgumentException("RecordID cannot be null or whitespace.");
         }
 
+        string metaData = MetaDataConvertor.MetaDataToString(request.Meta);
+
         var parameters = new Dictionary<string, string>
         {
             { "recordID", request.RecordID },
-            { "meta", request.Meta.ToString() ?? string.Empty }
+            { "meta", metaData ?? string.Empty }
         };
 
         return await GetResponseAsync<T>("updateRecordings", parameters);

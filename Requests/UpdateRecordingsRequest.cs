@@ -1,4 +1,6 @@
-﻿namespace BigBlueButtonAPI.Requests
+﻿using BigBlueButtonAPI.Entities;
+
+namespace BigBlueButtonAPI.Requests
 {
     public class UpdateRecordingsRequest
     {
@@ -7,6 +9,6 @@
         /// </summary>
         public string RecordID { get; set; }
 
-        public string Meta { get; set; }
+        public MetaData Meta { get; set; }
     }
 }

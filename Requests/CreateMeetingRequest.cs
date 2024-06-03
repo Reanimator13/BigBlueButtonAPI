@@ -58,4 +58,16 @@ public class CreateMeetingRequest
     public int? MeetingCameraCap { get; set; }
     public int? MeetingExpireIfNoUserJoinedInMinutes { get; set; }
     public int? MeetingExpireWhenLastUserLeftInMinutes { get; set; }
+
+    //FIXME: Expected value: Json with Array of groups.
+    public string Groups { get; set; }
+    public string DisabledFeatures { get; set; }
+    public string DisabledFeaturesExclude { get; set; }
+    public bool? PreUploadedPresentationOverrideDefault { get; set; }
+    public bool? NotifyRecordingIsOn { get; set; }
+    public string PresentationUploadExternalUrl { get; set; }
+    public string PresentationUploadExternalDescription { get; set; }
+    public bool? RecordFullDurationMedia { get; set; }
+    public string PreUploadedPresentation { get; set; }
+    public string PreUploadedPresentationName { get; set; }
 }

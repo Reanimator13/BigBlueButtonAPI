@@ -61,7 +61,7 @@ public class Meeting : BaseResponse
     public int ListenerCount { get; set; }
 
     [XmlElement("voiceParticipantCount")]
-    public int VoiceParticipantCount { get; set; }
+    public int? VoiceParticipantCount { get; set; }
 
     [XmlElement("videoCount")]
     public int VideoCount { get; set; }
@@ -76,7 +76,8 @@ public class Meeting : BaseResponse
     [XmlArrayItem("attendee")]
     public List<Attendee> Attendees { get; set; }
 
-    //<metadata />
+    [XmlElement("metadata")]
+    public MetaData MetaData { get; set; }
 
     [XmlElement("isBreakout")]
     public bool IsBreakout { get; set; }
