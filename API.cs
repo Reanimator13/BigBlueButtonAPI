@@ -1,10 +1,10 @@
-﻿using System;
+﻿using BigBlueButtonAPI.Requests;
+using BigBlueButtonAPI.Responses;
+using BigBlueButtonAPI.Utils;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using BigBlueButtonAPI.Requests;
-using BigBlueButtonAPI.Responses;
-using BigBlueButtonAPI.Utils;
 
 namespace BigBlueButtonAPI;
 
@@ -51,8 +51,6 @@ public class API : IAPI
             throw new ArgumentException("Name and MeetingID cannot be null or whitespace.");
         }
 
-        string metaData = MetaDataConvertor.MetaDataToString(request.Meta);
-
         var parameters = new Dictionary<string, string>
         {
             { "name", request.Name },
@@ -76,7 +74,7 @@ public class API : IAPI
                 request.BreakoutRoomsPrivateChatEnabled.ToString() ?? string.Empty
             },
             { "breakoutRoomsRecord", request.BreakoutRoomsRecord.ToString() ?? string.Empty },
-            { "meta", metaData ?? string.Empty },
+            { "meta", MetaDataConverter.ConvertMetaDataToString(request.Meta) ?? string.Empty },
             { "moderatorOnlyMessage", request.ModeratorOnlyMessage ?? string.Empty },
             { "autoStartRecording", request.AutoStartRecording.ToString() ?? string.Empty },
             {
@@ -295,14 +293,12 @@ public class API : IAPI
     public async Task<T> GetRecordingsAsync<T>(GetRecordingsRequest request)
         where T : BaseResponse
     {
-        string metaData = MetaDataConvertor.MetaDataToString(request.Meta);
-
         var parameters = new Dictionary<string, string>
         {
             { "meetingID", request.MeetingID ?? string.Empty },
             { "recordID", request.RecordID ?? string.Empty },
             { "state", request.State ?? string.Empty },
-            { "meta", metaData ?? string.Empty },
+            { "meta", MetaDataConverter.ConvertMetaDataToString(request.Meta) ?? string.Empty },
             { "offset", request.Offset.ToString() ?? string.Empty },
             { "limit", request.Limit.ToString() ?? string.Empty }
         };
@@ -357,12 +353,10 @@ public class API : IAPI
             throw new ArgumentException("RecordID cannot be null or whitespace.");
         }
 
-        string metaData = MetaDataConvertor.MetaDataToString(request.Meta);
-
         var parameters = new Dictionary<string, string>
         {
             { "recordID", request.RecordID },
-            { "meta", metaData ?? string.Empty }
+            { "meta", MetaDataConverter.ConvertMetaDataToString(request.Meta) ?? string.Empty }
         };
 
         return await GetResponseAsync<T>("updateRecordings", parameters);

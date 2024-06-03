@@ -9,6 +9,6 @@ namespace BigBlueButtonAPI.Requests
         /// </summary>
         public string RecordID { get; set; }
 
-        public MetaData Meta { get; set; }
+        public Metadata Meta { get; set; }
     }
 }

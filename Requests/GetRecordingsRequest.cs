@@ -22,7 +22,7 @@ namespace BigBlueButtonAPI.Requests
         /// <summary>
         /// You can pass one or more metadata values to filter the recordings returned.
         /// </summary>
-        public MetaData Meta { get; set; }
+        public Metadata Meta { get; set; }
 
         /// <summary>
         /// The starting index for returned recordings. Number must greater than or equal to 0.

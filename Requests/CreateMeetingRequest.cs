@@ -18,7 +18,7 @@ public class CreateMeetingRequest
     public bool? IsBreakout { get; set; }
     public string ParentMeetingID { get; set; }
     public int? Sequence { get; set; }
-    public MetaData Meta { get; set; }
+    public Metadata Meta { get; set; }
     public bool? FreeJoin { get; set; }
     public bool? BreakoutRoomsEnabled { get; set; }
     public bool? BreakoutRoomsPrivateChatEnabled { get; set; }

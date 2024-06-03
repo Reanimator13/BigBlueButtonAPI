@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 
 namespace BigBlueButtonAPI.Entities;
 
-public class Metadata : Dictionary<string, string>, IXmlSerializable
+public class PlaybackPreviewImages : List<PlaybackPreviewImage>, IXmlSerializable
 {
     public XmlSchema GetSchema() => null;
 
@@ -14,11 +14,12 @@ public class Metadata : Dictionary<string, string>, IXmlSerializable
         if (reader.IsEmptyElement || !reader.Read())
             return;
 
+        var imageSerializer = new XmlSerializer(typeof(PlaybackPreviewImage));
         while (reader.NodeType != XmlNodeType.EndElement)
         {
-            if (reader.NodeType == XmlNodeType.Element)
+            if (reader.NodeType == XmlNodeType.Element && reader.Name != "images")
             {
-                Add(reader.Name, reader.ReadElementContentAsString());
+                Add(imageSerializer.Deserialize(reader) as PlaybackPreviewImage);
             }
             else
             {
@@ -30,9 +31,10 @@ public class Metadata : Dictionary<string, string>, IXmlSerializable
 
     public void WriteXml(XmlWriter writer)
     {
-        foreach (var keyValuePair in this)
+        foreach (var image in this)
         {
-            writer.WriteElementString(keyValuePair.Key, keyValuePair.Value);
+            var imageSerializer = new XmlSerializer(typeof(PlaybackPreviewImage));
+            imageSerializer.Serialize(writer, image);
         }
     }
 }

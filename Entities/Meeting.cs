@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using BigBlueButtonAPI.Responses;
+using System.Collections.Generic;
 using System.Xml.Serialization;
-using BigBlueButtonAPI.Responses;
 
 namespace BigBlueButtonAPI.Entities;
 
@@ -77,7 +77,7 @@ public class Meeting : BaseResponse
     public List<Attendee> Attendees { get; set; }
 
     [XmlElement("metadata")]
-    public MetaData MetaData { get; set; }
+    public Metadata MetaData { get; set; }
 
     [XmlElement("isBreakout")]
     public bool IsBreakout { get; set; }
