@@ -4,57 +4,24 @@ namespace BigBlueButtonAPI.Requests;
 
 public class CreateMeetingRequest
 {
-    /// <summary>
-    /// A name for the meeting. This is now required as of BigBlueButton 2.4.
-    /// </summary>
     public string Name { get; set; }
 
-    /// <summary>
-    /// A meeting ID that can be used to identify this meeting by the 3rd-party application.
-    /// </summary>
     public string MeetingID { get; set; }
 
-    /// <summary>
-    /// [DEPRECATED] The password that the join URL can later provide as its password parameter to indicate the user will join as a viewer.
-    /// If no attendeePW is provided,
-    /// the create call will return a randomly generated attendeePW password for the meeting.
-    /// </summary>
-    public string AttendeePW { get; set; }
+    public string AttendeePW { get; set; } = string.Empty;
 
-    /// <summary>
-    /// [DEPRECATED] The password that will join URL can later provide as its password parameter to indicate the user will as a moderator.
-    /// If no moderatorPW is provided, create will return a randomly generated moderatorPW password for the meeting.
-    /// </summary>
-    public string ModeratorPW { get; set; }
+    public string ModeratorPW { get; set; } = string.Empty;
 
-    /// <summary>
-    /// A welcome message that gets displayed on the chat window when the participant joins.
-    /// </summary>
-    public string Welcome { get; set; }
+    public string Welcome { get; set; } = string.Empty;
 
-    /// <summary>
-    /// The dial access number that participants can call in using regular phone.
-    /// </summary>
-    public string DialNumber { get; set; }
+    public string DialNumber { get; set; } = string.Empty;
 
-    /// <summary>
-    /// Voice conference number for the FreeSWITCH voice conference associated with this meeting. This must be a 5-digit number in the range 10000 to 99999.
-    /// </summary>
     public string VoiceBridge { get; set; }
 
-    /// <summary>
-    /// Set the maximum number of users allowed to joined the conference at the same time.
-    /// </summary>
     public int? MaxParticipants { get; set; }
 
-    /// <summary>
-    /// The URL that the BigBlueButton client will go to after users click the OK button on the ‘You have been logged out message’.
-    /// </summary>
     public string LogoutURL { get; set; }
 
-    /// <summary>
-    /// Setting ‘record=true’ instructs the BigBlueButton server to record the media and events in the session for later playback. The default is false.
-    /// </summary>
     public bool? Record { get; set; } = false;
     public int? Duration { get; set; }
     public bool? IsBreakout { get; set; }

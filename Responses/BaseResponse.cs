@@ -15,13 +15,13 @@ public class BaseResponse
     public string Version { get; set; }
 
     [XmlElement("returncode")]
-    public ReturnCode ReturnCode { get; set; }
+    public ReturnCode ReturnCode { get; set; } = ReturnCode.FAILED;
 
     [XmlElement("messageKey")]
-    public string MessageKey { get; set; }
+    public string MessageKey { get; set; } = string.Empty;
 
     [XmlElement("message")]
-    public string Message { get; set; }
+    public string Message { get; set; } = string.Empty;
 }
 
 public static class BaseResponseParser

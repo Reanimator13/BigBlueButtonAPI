@@ -77,7 +77,7 @@ public class Meeting : BaseResponse
     public List<Attendee> Attendees { get; set; }
 
     [XmlElement("metadata")]
-    public Metadata MetaData { get; set; }
+    public Metadata Meta { get; set; }
 
     [XmlElement("isBreakout")]
     public bool IsBreakout { get; set; }

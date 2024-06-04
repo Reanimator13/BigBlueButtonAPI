@@ -4,11 +4,11 @@ using BigBlueButtonAPI.Entities;
 
 namespace BigBlueButtonAPI.Utils;
 
-public static class MetaDataConverter
+public static class MetadataConverter
 {
-    public static string ConvertMetaDataToString(Metadata metadata)
+    public static string ConverterMetadataToString(Metadata metadata)
     {
-        var metadataItems = GetMetaDataItems(metadata);
+        var metadataItems = GetMetadataItems(metadata);
 
         if (metadataItems.Count != 0)
         {
@@ -19,7 +19,7 @@ public static class MetaDataConverter
         return string.Empty;
     }
 
-    private static List<KeyValuePair<string, string>> GetMetaDataItems(Metadata metadata)
+    private static List<KeyValuePair<string, string>> GetMetadataItems(Metadata metadata)
     {
         var metadataItems = new List<KeyValuePair<string, string>>();
 

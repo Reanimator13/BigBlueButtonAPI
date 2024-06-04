@@ -44,21 +44,32 @@ public class API : IAPI
 
     #region CreateMeeting
 
+    /// <summary>
+    /// Creates a new BigBlueButton meeting.
+    /// </summary>
+    /// <typeparam name="T">The type of response expected.</typeparam>
+    /// <param name="request">The request parameters for the meeting.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The response from the API.</returns>
     public async Task<T> CreateMeetingAsync<T>(
         CreateMeetingRequest request,
         CancellationToken cancellationToken = default
     )
         where T : BaseResponse
     {
+        // Validate the request parameters
         if (string.IsNullOrWhiteSpace(request.Name) || string.IsNullOrWhiteSpace(request.MeetingID))
         {
             throw new ArgumentException("Name and MeetingID cannot be null or whitespace.");
         }
 
+        // Build the parameters for the API request
         var parameters = new Dictionary<string, string>
         {
+            // Required parameters
             { "name", request.Name },
             { "meetingID", request.MeetingID },
+            // Optional parameters
             { "attendeePW", request.AttendeePW ?? string.Empty },
             { "moderatorPW", request.ModeratorPW ?? string.Empty },
             { "welcome", request.Welcome ?? string.Empty },
@@ -78,7 +89,7 @@ public class API : IAPI
                 request.BreakoutRoomsPrivateChatEnabled.ToString() ?? string.Empty
             },
             { "breakoutRoomsRecord", request.BreakoutRoomsRecord.ToString() ?? string.Empty },
-            { "meta", MetaDataConverter.ConvertMetaDataToString(request.Meta) ?? string.Empty },
+            { "meta", MetadataConverter.ConverterMetadataToString(request.Meta) ?? string.Empty },
             { "moderatorOnlyMessage", request.ModeratorOnlyMessage ?? string.Empty },
             { "autoStartRecording", request.AutoStartRecording.ToString() ?? string.Empty },
             {
@@ -106,10 +117,6 @@ public class API : IAPI
             {
                 "lockSettingsDisableNote",
                 request.LockSettingsDisableNote.ToString() ?? string.Empty
-            },
-            {
-                "lockSettingsDisablePrivateChat",
-                request.LockSettingsDisablePrivateChat.ToString() ?? string.Empty
             },
             { "lockSettingsLockOnJoin", request.LockSettingsLockOnJoin.ToString() ?? string.Empty },
             {
@@ -188,11 +195,20 @@ public class API : IAPI
             { "preUploadedPresentationName", request.PreUploadedPresentationName ?? string.Empty },
         };
 
+        // Send the API request and return the response
         return await GetResponseAsync<T>("create", parameters, cancellationToken);
     }
     #endregion
 
     #region JoinMeting
+    /// <summary>
+    /// Joins a meeting.
+    /// </summary>
+    /// <typeparam name="T">The type of the response object.</typeparam>
+    /// <param name="request">The join meeting request.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
+    /// <returns>The response from the API.</returns>
+    /// <exception cref="ArgumentException">If the FullName or MeetingID is null or whitespace.</exception>
     public async Task<T> JoinMeetingAsync<T>(
         JoinMeetingRequest request,
         CancellationToken cancellationToken = default
@@ -207,10 +223,13 @@ public class API : IAPI
             throw new ArgumentException("FullName and MeetingID cannot be null or whitespace.");
         }
 
+        // Prepare the parameters for the API request
         var parameters = new Dictionary<string, string>
         {
+            // Required parameters
             { "fullName", request.FullName },
             { "meetingID", request.MeetingID },
+            // Optional parameters
             { "password", request.Password ?? string.Empty },
             { "role", request.Role ?? string.Empty },
             { "createTime", request.CreateTime ?? string.Empty },
@@ -225,28 +244,42 @@ public class API : IAPI
             { "excludeFromDashboard", request.ExcludeFromDashboard ?? string.Empty },
         };
 
+        // Send the API request and return the response
         return await GetResponseAsync<T>("join", parameters, cancellationToken);
     }
     #endregion
 
     #region EndMeeting
+    /// <summary>
+    /// Ends a meeting.
+    /// </summary>
+    /// <typeparam name="T">The type of the response object.</typeparam>
+    /// <param name="request">The request parameters for the meeting.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The response from the API.</returns>
+    /// <exception cref="ArgumentException">If the MeetingID is null or whitespace.</exception>
     public async Task<T> EndMeetingAsync<T>(
         EndMeetingRequest request,
         CancellationToken cancellationToken = default
     )
         where T : BaseResponse
     {
+        // Validate the request parameters
         if (string.IsNullOrWhiteSpace(request.MeetingID))
         {
             throw new ArgumentException("MeetingID cannot be null or whitespace.");
         }
 
+        // Build the parameters for the API request
         var parameters = new Dictionary<string, string>
         {
+            // Required parameters
             { "meetingID", request.MeetingID },
+            // Optional parameters
             { "password", request.Password ?? string.Empty }
         };
 
+        // Send the API request and return the response
         return await GetResponseAsync<T>("end", parameters, cancellationToken);
     }
 
@@ -257,45 +290,86 @@ public class API : IAPI
     #region Monitoring
 
     #region isMeetingRunning
+    /// <summary>
+    /// Checks if a meeting is running.
+    /// </summary>
+    /// <typeparam name="T">The type of the response object.</typeparam>
+    /// <param name="request">The request parameters for the meeting.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The response from the API.</returns>
+    /// <exception cref="ArgumentException">If the MeetingID is null or whitespace.</exception>
     public async Task<T> IsMeetingRunningAsync<T>(
         IsMeetingRunningRequest request,
         CancellationToken cancellationToken = default
     )
         where T : BaseResponse
     {
+        // Validate the request parameters
         if (string.IsNullOrWhiteSpace(request.MeetingID))
         {
             throw new ArgumentException("MeetingID cannot be null or whitespace.");
         }
 
-        var parameters = new Dictionary<string, string> { { "meetingID", request.MeetingID } };
+        // Build the parameters for the API request
+        var parameters = new Dictionary<string, string>
+        {
+            // Required parameters
+            { "meetingID", request.MeetingID }
+        };
 
+        // Send the API request and return the response
         return await GetResponseAsync<T>("isMeetingRunning", parameters, cancellationToken);
     }
     #endregion
 
     #region getMeetings
+    /// <summary>
+    /// Gets a list of all the running meetings.
+    /// </summary>
+    /// <typeparam name="T">The type of the response object.</typeparam>
+    /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
+    /// <returns>The response from the API.</returns>
     public async Task<T> GetMeetingsAsync<T>(CancellationToken cancellationToken = default)
         where T : BaseResponse
     {
-        return await GetResponseAsync<T>("getMeetings", [], cancellationToken);
+        // Send the API request and return the response
+        return await GetResponseAsync<T>(
+            "getMeetings",
+            new Dictionary<string, string>(),
+            cancellationToken
+        );
     }
     #endregion
 
     #region getMeetingInfo
+    /// <summary>
+    /// Gets information about a specific meeting.
+    /// </summary>
+    /// <typeparam name="T">The type of the response object.</typeparam>
+    /// <param name="request">The request parameters for the meeting.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
+    /// <returns>The response from the API.</returns>
+    /// <exception cref="ArgumentException">If the MeetingID is null or whitespace.</exception>
     public async Task<T> GetMeetingInfoAsync<T>(
         GetMeetingInfoRequest request,
         CancellationToken cancellationToken = default
     )
         where T : BaseResponse
     {
+        // Validate the request parameters
         if (string.IsNullOrWhiteSpace(request.MeetingID))
         {
-            throw new ArgumentException("MeetingId cannot be null or whitespace.");
+            throw new ArgumentException("MeetingID cannot be null or whitespace.");
         }
 
-        var parameters = new Dictionary<string, string> { { "meetingID", request.MeetingID } };
+        // Build the parameters for the API request
+        var parameters = new Dictionary<string, string>
+        {
+            // Required parameters
+            { "meetingID", request.MeetingID }
+        };
 
+        // Send the API request and return the response
         return await GetResponseAsync<T>("getMeetingInfo", parameters, cancellationToken);
     }
     #endregion
@@ -317,7 +391,7 @@ public class API : IAPI
             { "meetingID", request.MeetingID ?? string.Empty },
             { "recordID", request.RecordID ?? string.Empty },
             { "state", request.State ?? string.Empty },
-            { "meta", MetaDataConverter.ConvertMetaDataToString(request.Meta) ?? string.Empty },
+            { "meta", MetadataConverter.ConverterMetadataToString(request.Meta) ?? string.Empty },
             { "offset", request.Offset.ToString() ?? string.Empty },
             { "limit", request.Limit.ToString() ?? string.Empty }
         };
@@ -326,12 +400,21 @@ public class API : IAPI
     }
 
     #region publishRecordings
+    /// <summary>
+    /// Publishes recordings.
+    /// </summary>
+    /// <typeparam name="T">The type of the response object.</typeparam>
+    /// <param name="request">The request parameters for publishing recordings.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The response from the API.</returns>
+    /// <exception cref="ArgumentException">If the RecordID or Publish is null or whitespace.</exception>
     public async Task<T> PublishRecordingsAsync<T>(
         PublishRecordingsRequest request,
         CancellationToken cancellationToken = default
     )
         where T : BaseResponse
     {
+        // Validate the request parameters
         if (
             string.IsNullOrWhiteSpace(request.RecordID)
             || string.IsNullOrWhiteSpace(request.Publish.ToString())
@@ -340,53 +423,84 @@ public class API : IAPI
             throw new ArgumentException("RecordID or Publish cannot be null or whitespace.");
         }
 
+        // Prepare the parameters for the API request
         var parameters = new Dictionary<string, string>
         {
+            // Required parameters
             { "recordID", request.RecordID },
             { "publish", request.Publish.ToString() },
         };
 
+        // Send the API request and return the response
         return await GetResponseAsync<T>("publishRecordings", parameters, cancellationToken);
     }
     #endregion
     #endregion
 
     #region deleteRecordings
+    /// <summary>
+    /// Deletes recordings.
+    /// </summary>
+    /// <typeparam name="T">The type of the response object.</typeparam>
+    /// <param name="request">The request parameters for deleting recordings.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The response from the API.</returns>
+    /// <exception cref="ArgumentException">If the RecordID is null or whitespace.</exception>
     public async Task<T> DeleteRecordingsAsync<T>(
         DeleteRecordingsRequest request,
         CancellationToken cancellationToken = default
     )
         where T : BaseResponse
     {
+        // Validate the request parameters
         if (string.IsNullOrWhiteSpace(request.RecordID))
         {
             throw new ArgumentException("RecordID cannot be null or whitespace.");
         }
 
-        var parameters = new Dictionary<string, string> { { "recordID", request.RecordID } };
+        // Prepare the parameters for the API request
+        var parameters = new Dictionary<string, string>
+        {
+            // Required parameters
+            { "recordID", request.RecordID }
+        };
 
+        // Send the API request and return the response
         return await GetResponseAsync<T>("deleteRecordings", parameters, cancellationToken);
     }
     #endregion
 
     #region updateRecordings
+    /// <summary>
+    /// Updates recordings.
+    /// </summary>
+    /// <typeparam name="T">The type of the response object.</typeparam>
+    /// <param name="request">The request parameters for updating recordings.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The response from the API.</returns>
+    /// <exception cref="ArgumentException">If the RecordID is null or whitespace.</exception>
     public async Task<T> UpdateRecordingsAsync<T>(
         UpdateRecordingsRequest request,
         CancellationToken cancellationToken = default
     )
         where T : BaseResponse
     {
+        // Validate the request parameters
         if (string.IsNullOrWhiteSpace(request.RecordID))
         {
             throw new ArgumentException("RecordID cannot be null or whitespace.");
         }
 
+        // Prepare the parameters for the API request
         var parameters = new Dictionary<string, string>
         {
+            // Required parameters
             { "recordID", request.RecordID },
-            { "meta", MetaDataConverter.ConvertMetaDataToString(request.Meta) ?? string.Empty }
+            // Optional parameters
+            { "meta", MetadataConverter.ConverterMetadataToString(request.Meta) ?? string.Empty }
         };
 
+        // Send the API request and return the response
         return await GetResponseAsync<T>("updateRecordings", parameters, cancellationToken);
     }
     #endregion
@@ -394,21 +508,33 @@ public class API : IAPI
     #region getRecordingTextTracks
 
 
+    /// <summary>
+    /// Retrieves the text tracks for a specific recording.
+    /// </summary>
+    /// <typeparam name="T">The type of the response object.</typeparam>
+    /// <param name="request">The request parameters for retrieving recording text tracks.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The response from the API.</returns>
+    /// <exception cref="ArgumentException">If the RecordID is null or whitespace.</exception>
     public async Task<T> GetRecordingTextTracksAsync<T>(
         GetRecordingTextTracksRequest request,
         CancellationToken cancellationToken = default
     )
         where T : BaseResponse
     {
+        // Validate the request parameters
         if (string.IsNullOrWhiteSpace(request.RecordID))
         {
             throw new ArgumentException("RecordID cannot be null or whitespace.");
         }
 
+        // Prepare the parameters for the API request
         var parameters = new Dictionary<string, string> { { "recordID", request.RecordID } };
 
+        // Send the API request and return the response
         return await GetResponseAsync<T>("getRecordingTextTracks", parameters, cancellationToken);
     }
+
     #endregion
 
     #endregion
