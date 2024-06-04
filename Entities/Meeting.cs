@@ -1,6 +1,6 @@
-﻿using BigBlueButtonAPI.Responses;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
+using BigBlueButtonAPI.Responses;
 
 namespace BigBlueButtonAPI.Entities;
 

@@ -2,6 +2,6 @@
 
 public enum ReturnCode
 {
-    SUCCESS = 0,
-    FAILED = 1
+    SUCCESS,
+    FAILED
 }

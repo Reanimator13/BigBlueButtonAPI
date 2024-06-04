@@ -1,10 +1,11 @@
-﻿using BigBlueButtonAPI.Requests;
-using BigBlueButtonAPI.Responses;
-using BigBlueButtonAPI.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
+using BigBlueButtonAPI.Requests;
+using BigBlueButtonAPI.Responses;
+using BigBlueButtonAPI.Utils;
 
 namespace BigBlueButtonAPI;
 
@@ -32,9 +33,9 @@ public class API : IAPI
     /// Gets the version of the BigBlueButton API.
     /// </summary>
     /// <returns></returns>
-    public async Task<BaseResponse> GetVersionAsync()
+    public async Task<BaseResponse> GetVersionAsync(CancellationToken cancellationToken = default)
     {
-        return BaseResponseParser.Parse<BaseResponse>(await HttpGetAsync(_url));
+        return BaseResponseParser.Parse<BaseResponse>(await HttpGetAsync(_url, cancellationToken));
     }
 
     #endregion
@@ -43,7 +44,10 @@ public class API : IAPI
 
     #region CreateMeeting
 
-    public async Task<T> CreateMeetingAsync<T>(CreateMeetingRequest request)
+    public async Task<T> CreateMeetingAsync<T>(
+        CreateMeetingRequest request,
+        CancellationToken cancellationToken = default
+    )
         where T : BaseResponse
     {
         if (string.IsNullOrWhiteSpace(request.Name) || string.IsNullOrWhiteSpace(request.MeetingID))
@@ -123,12 +127,12 @@ public class API : IAPI
                 "endWhenNoModeratorDelayInMinutes",
                 request.EndWhenNoModeratorDelayInMinutes.ToString() ?? string.Empty
             },
-            //FIXME: MeetingLayout is ENUM
-            { "meetingLayout", request.MeetingLayout.ToString() ?? string.Empty },
+            { "meetingLayout", ((MeetingLayout)request.MeetingLayout).ToString() ?? string.Empty },
             {
                 "learningDashboardEnabled",
                 request.LearningDashboardEnabled.ToString() ?? string.Empty
             },
+            { "keepEvents", request.KeepEvents.ToString() ?? string.Empty },
             {
                 "learningDashboardCleanupDelayInMinutes",
                 request.LearningDashboardCleanupDelayInMinutes.ToString() ?? string.Empty
@@ -184,12 +188,15 @@ public class API : IAPI
             { "preUploadedPresentationName", request.PreUploadedPresentationName ?? string.Empty },
         };
 
-        return await GetResponseAsync<T>("create", parameters);
+        return await GetResponseAsync<T>("create", parameters, cancellationToken);
     }
     #endregion
 
     #region JoinMeting
-    public async Task<T> JoinMeetingAsync<T>(JoinMeetingRequest request)
+    public async Task<T> JoinMeetingAsync<T>(
+        JoinMeetingRequest request,
+        CancellationToken cancellationToken = default
+    )
         where T : BaseResponse
     {
         if (
@@ -218,12 +225,15 @@ public class API : IAPI
             { "excludeFromDashboard", request.ExcludeFromDashboard ?? string.Empty },
         };
 
-        return await GetResponseAsync<T>("join", parameters);
+        return await GetResponseAsync<T>("join", parameters, cancellationToken);
     }
     #endregion
 
     #region EndMeeting
-    public async Task<T> EndMeetingAsync<T>(EndMeetingRequest request)
+    public async Task<T> EndMeetingAsync<T>(
+        EndMeetingRequest request,
+        CancellationToken cancellationToken = default
+    )
         where T : BaseResponse
     {
         if (string.IsNullOrWhiteSpace(request.MeetingID))
@@ -237,7 +247,7 @@ public class API : IAPI
             { "password", request.Password ?? string.Empty }
         };
 
-        return await GetResponseAsync<T>("end", parameters);
+        return await GetResponseAsync<T>("end", parameters, cancellationToken);
     }
 
     #endregion
@@ -247,7 +257,10 @@ public class API : IAPI
     #region Monitoring
 
     #region isMeetingRunning
-    public async Task<T> IsMeetingRunningAsync<T>(IsMeetingRunningRequest request)
+    public async Task<T> IsMeetingRunningAsync<T>(
+        IsMeetingRunningRequest request,
+        CancellationToken cancellationToken = default
+    )
         where T : BaseResponse
     {
         if (string.IsNullOrWhiteSpace(request.MeetingID))
@@ -257,20 +270,23 @@ public class API : IAPI
 
         var parameters = new Dictionary<string, string> { { "meetingID", request.MeetingID } };
 
-        return await GetResponseAsync<T>("isMeetingRunning", parameters);
+        return await GetResponseAsync<T>("isMeetingRunning", parameters, cancellationToken);
     }
     #endregion
 
     #region getMeetings
-    public async Task<T> GetMeetingsAsync<T>()
+    public async Task<T> GetMeetingsAsync<T>(CancellationToken cancellationToken = default)
         where T : BaseResponse
     {
-        return await GetResponseAsync<T>("getMeetings", new Dictionary<string, string>());
+        return await GetResponseAsync<T>("getMeetings", [], cancellationToken);
     }
     #endregion
 
     #region getMeetingInfo
-    public async Task<T> GetMeetingInfoAsync<T>(GetMeetingInfoRequest request)
+    public async Task<T> GetMeetingInfoAsync<T>(
+        GetMeetingInfoRequest request,
+        CancellationToken cancellationToken = default
+    )
         where T : BaseResponse
     {
         if (string.IsNullOrWhiteSpace(request.MeetingID))
@@ -280,7 +296,7 @@ public class API : IAPI
 
         var parameters = new Dictionary<string, string> { { "meetingID", request.MeetingID } };
 
-        return await GetResponseAsync<T>("getMeetingInfo", parameters);
+        return await GetResponseAsync<T>("getMeetingInfo", parameters, cancellationToken);
     }
     #endregion
 
@@ -290,7 +306,10 @@ public class API : IAPI
 
     #region getRecordings
 
-    public async Task<T> GetRecordingsAsync<T>(GetRecordingsRequest request)
+    public async Task<T> GetRecordingsAsync<T>(
+        GetRecordingsRequest request,
+        CancellationToken cancellationToken = default
+    )
         where T : BaseResponse
     {
         var parameters = new Dictionary<string, string>
@@ -303,11 +322,14 @@ public class API : IAPI
             { "limit", request.Limit.ToString() ?? string.Empty }
         };
 
-        return await GetResponseAsync<T>("getRecordings", parameters);
+        return await GetResponseAsync<T>("getRecordings", parameters, cancellationToken);
     }
 
     #region publishRecordings
-    public async Task<T> PublishRecordingsAsync<T>(PublishRecordingsRequest request)
+    public async Task<T> PublishRecordingsAsync<T>(
+        PublishRecordingsRequest request,
+        CancellationToken cancellationToken = default
+    )
         where T : BaseResponse
     {
         if (
@@ -324,13 +346,16 @@ public class API : IAPI
             { "publish", request.Publish.ToString() },
         };
 
-        return await GetResponseAsync<T>("publishRecordings", parameters);
+        return await GetResponseAsync<T>("publishRecordings", parameters, cancellationToken);
     }
     #endregion
     #endregion
 
     #region deleteRecordings
-    public async Task<T> DeleteRecordingsAsync<T>(DeleteRecordingsRequest request)
+    public async Task<T> DeleteRecordingsAsync<T>(
+        DeleteRecordingsRequest request,
+        CancellationToken cancellationToken = default
+    )
         where T : BaseResponse
     {
         if (string.IsNullOrWhiteSpace(request.RecordID))
@@ -340,12 +365,15 @@ public class API : IAPI
 
         var parameters = new Dictionary<string, string> { { "recordID", request.RecordID } };
 
-        return await GetResponseAsync<T>("deleteRecordings", parameters);
+        return await GetResponseAsync<T>("deleteRecordings", parameters, cancellationToken);
     }
     #endregion
 
     #region updateRecordings
-    public async Task<T> UpdateRecordingsAsync<T>(UpdateRecordingsRequest request)
+    public async Task<T> UpdateRecordingsAsync<T>(
+        UpdateRecordingsRequest request,
+        CancellationToken cancellationToken = default
+    )
         where T : BaseResponse
     {
         if (string.IsNullOrWhiteSpace(request.RecordID))
@@ -359,14 +387,17 @@ public class API : IAPI
             { "meta", MetaDataConverter.ConvertMetaDataToString(request.Meta) ?? string.Empty }
         };
 
-        return await GetResponseAsync<T>("updateRecordings", parameters);
+        return await GetResponseAsync<T>("updateRecordings", parameters, cancellationToken);
     }
     #endregion
 
     #region getRecordingTextTracks
 
 
-    public async Task<T> GetRecordingTextTracksAsync<T>(GetRecordingTextTracksRequest request)
+    public async Task<T> GetRecordingTextTracksAsync<T>(
+        GetRecordingTextTracksRequest request,
+        CancellationToken cancellationToken = default
+    )
         where T : BaseResponse
     {
         if (string.IsNullOrWhiteSpace(request.RecordID))
@@ -376,7 +407,7 @@ public class API : IAPI
 
         var parameters = new Dictionary<string, string> { { "recordID", request.RecordID } };
 
-        return await GetResponseAsync<T>("getRecordingTextTracks", parameters);
+        return await GetResponseAsync<T>("getRecordingTextTracks", parameters, cancellationToken);
     }
     #endregion
 
@@ -388,13 +419,16 @@ public class API : IAPI
     /// </summary>
     /// <param name="url">The URL to send the GET request to.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the response from the server.</returns>
-    private static async Task<string> HttpGetAsync(string url)
+    private static async Task<string> HttpGetAsync(
+        string url,
+        CancellationToken cancellationToken = default
+    )
     {
         // Create an instance of the HttpClient class to send the GET request.
         using var httpClient = new HttpClient();
 
         // Send a GET request to the specified URL and get the response.
-        return await httpClient.GetStringAsync(url);
+        return await httpClient.GetStringAsync(url, cancellationToken);
     }
 
     /// <summary>
@@ -423,7 +457,8 @@ public class API : IAPI
     /// <returns>A task that represents the asynchronous operation. The task result contains the parsed response.</returns>
     private async Task<T> GetResponseAsync<T>(
         string apiCallName,
-        Dictionary<string, string> parameters
+        Dictionary<string, string> parameters,
+        CancellationToken cancellationToken = default
     )
         where T : BaseResponse
     {
@@ -435,7 +470,7 @@ public class API : IAPI
         var fullUrl = $"{_url}{apiCallName}?{queryBuilder}";
 
         // Send a GET request to the BigBlueButton API and get the response
-        var response = await HttpGetAsync(fullUrl);
+        var response = await HttpGetAsync(fullUrl, cancellationToken);
 
         // Parse the response into the specified type and return it
         return BaseResponseParser.Parse<T>(response);

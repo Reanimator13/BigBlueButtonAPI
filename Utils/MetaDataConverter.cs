@@ -1,34 +1,33 @@
-﻿using BigBlueButtonAPI.Entities;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Net.Http;
+using BigBlueButtonAPI.Entities;
 
 namespace BigBlueButtonAPI.Utils;
 
 public static class MetaDataConverter
 {
-    public static string ConvertMetaDataToString(Metadata metaData)
+    public static string ConvertMetaDataToString(Metadata metadata)
     {
-        var metaDataItems = GetMetaDataItems(metaData);
+        var metadataItems = GetMetaDataItems(metadata);
 
-        if (metaDataItems.Any())
+        if (metadataItems.Count != 0)
         {
-            var formUrlEncodedContent = new FormUrlEncodedContent(metaDataItems);
+            var formUrlEncodedContent = new FormUrlEncodedContent(metadataItems);
             return formUrlEncodedContent.ReadAsStringAsync().Result;
         }
 
         return string.Empty;
     }
 
-    private static List<KeyValuePair<string, string>> GetMetaDataItems(Metadata metaData)
+    private static List<KeyValuePair<string, string>> GetMetaDataItems(Metadata metadata)
     {
-        var metaDataItems = new List<KeyValuePair<string, string>>();
+        var metadataItems = new List<KeyValuePair<string, string>>();
 
-        foreach (var key in metaData.Keys)
+        foreach (var key in metadata.Keys)
         {
-            metaDataItems.Add(new KeyValuePair<string, string>("meta_" + key, metaData[key]));
+            metadataItems.Add(new KeyValuePair<string, string>("meta_" + key, metadata[key]));
         }
 
-        return metaDataItems;
+        return metadataItems;
     }
 }
