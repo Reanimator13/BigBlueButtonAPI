@@ -1,39 +1,114 @@
-﻿using BigBlueButtonAPI.Entities;
+﻿using System.Collections.Generic;
+using BigBlueButtonAPI.Entities;
 
 namespace BigBlueButtonAPI.Requests;
 
 public class CreateMeetingRequest
 {
-    public string Name { get; set; }
+    /// <summary>
+    /// [Required] A name for the meeting.
+    /// </summary>
+    public string Name { get; set; } = string.Empty;
 
-    public string MeetingID { get; set; }
+    /// <summary>
+    /// [Required] The meeting ID.
+    /// </summary>
+    public string MeetingID { get; set; } = string.Empty;
 
+    /// <summary>
+    ///[DEPRECATED] The password that the join URL can later provide as its password parameter to indicate the user will join as a viewer.
+    /// </summary>
     public string AttendeePW { get; set; } = string.Empty;
 
+    /// <summary>
+    /// [DEPRECATED] The password that the join URL can later provide as its password parameter to indicate the user will join as a moderator.
+    /// </summary>
     public string ModeratorPW { get; set; } = string.Empty;
 
+    /// <summary>
+    /// [Optional] A welcome message that gets displayed on the chat window when the participant joins.
+    /// </summary>
     public string Welcome { get; set; } = string.Empty;
 
+    /// <summary>
+    /// [Optional] The dial access number that participants can call in using regular phone.
+    /// </summary>
     public string DialNumber { get; set; } = string.Empty;
 
-    public string VoiceBridge { get; set; }
+    /// <summary>
+    /// [Optional] Voice conference number for the FreeSWITCH voice conference associated with this meeting. This must be a 5-digit number in the range 10000 to 99999.
+    /// </summary>
+    public string VoiceBridge { get; set; } = string.Empty;
 
+    /// <summary>
+    /// [Optional] The maximum number of participants allowed in the meeting.
+    /// </summary>
     public int? MaxParticipants { get; set; }
 
-    public string LogoutURL { get; set; }
+    /// <summary>
+    /// [Optional] The URL to which participants will be redirected after logging out.
+    /// </summary>
+    public string LogoutURL { get; set; } = string.Empty;
 
+    /// <summary>
+    /// [Optional] Whether to record the meeting.
+    /// </summary>
     public bool? Record { get; set; } = false;
+
+    /// <summary>
+    /// [Optional] The duration of the meeting in minutes.
+    /// </summary>
     public int? Duration { get; set; }
+
+    /// <summary>
+    /// [Optional] Must be set to true to create a breakout room.
+    /// </summary>
     public bool? IsBreakout { get; set; }
-    public string ParentMeetingID { get; set; }
+
+    /// <summary>
+    /// [Optional] The parent meeting ID.
+    /// </summary>
+    public string ParentMeetingID { get; set; } = string.Empty;
+
+    /// <summary>
+    /// [Optional] The meeting sequence number.
+    /// </summary>
     public int? Sequence { get; set; }
-    public Metadata Meta { get; set; }
+
+    /// <summary>
+    /// [Optional] If set to true, the client will give the user the choice to choose the breakout rooms he wants to join.
+    /// </summary>
     public bool? FreeJoin { get; set; }
-    public bool? BreakoutRoomsEnabled { get; set; }
-    public bool? BreakoutRoomsPrivateChatEnabled { get; set; }
-    public bool? BreakoutRoomsRecord { get; set; }
-    public string ModeratorOnlyMessage { get; set; }
-    public bool? AutoStartRecording { get; set; }
+
+    /// <summary>
+    /// [DEPRECATED] [Removed in 2.5] If set to false, breakout rooms will be disabled.
+    /// </summary>
+    public bool? BreakoutRoomsEnabled { get; set; } = true;
+
+    /// <summary>
+    /// [Optional] If set to false, breakout rooms will be private.
+    /// </summary>
+    public bool? BreakoutRoomsPrivateChatEnabled { get; set; } = true;
+
+    /// <summary>
+    /// [Optional] If set to false, breakout rooms will be recordable.
+    /// </summary>
+    public bool? BreakoutRoomsRecord { get; set; } = true;
+
+    /// <summary>
+    /// [Optional] Metadata
+    /// </summary>
+    public Metadata? Meta { get; set; }
+
+    /// <summary>
+    /// [Optional] Display a message to all moderators in the public chat.
+    /// </summary>
+    public string ModeratorOnlyMessage { get; set; } = string.Empty;
+
+    /// <summary>
+    /// [Optional] Whether to auto start recording.
+    /// </summary>
+    public bool? AutoStartRecording { get; set; } = false;
     public bool? AllowStartStopRecording { get; set; }
     public bool? WebcamsOnlyForModerator { get; set; }
     public bool? LockSettingsHideViewersCursor { get; set; }
@@ -66,9 +141,7 @@ public class CreateMeetingRequest
     public int? MeetingCameraCap { get; set; }
     public int? MeetingExpireIfNoUserJoinedInMinutes { get; set; }
     public int? MeetingExpireWhenLastUserLeftInMinutes { get; set; }
-
-    //FIX: Expected value: Json with Array of groups.
-    public string Groups { get; set; }
+    public List<Group>? Groups { get; set; }
     public string DisabledFeatures { get; set; }
     public string DisabledFeaturesExclude { get; set; }
     public bool? PreUploadedPresentationOverrideDefault { get; set; }

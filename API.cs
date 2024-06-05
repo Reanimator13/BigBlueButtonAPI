@@ -170,7 +170,7 @@ public class API : IAPI
                 "meetingExpireWhenLastUserLeftInMinutes",
                 request.MeetingExpireWhenLastUserLeftInMinutes.ToString() ?? string.Empty
             },
-            { "groups", request.Groups ?? string.Empty },
+            { "groups", Json.GroupsToJsonString(request.Groups) ?? string.Empty },
             { "logo", request.Logo ?? string.Empty },
             { "disabledFeatures", request.DisabledFeatures ?? string.Empty },
             { "disabledFeaturesExclude", request.DisabledFeaturesExclude ?? string.Empty },
@@ -305,7 +305,7 @@ public class API : IAPI
         where T : BaseResponse
     {
         // Validate the request parameters
-        if (string.IsNullOrWhiteSpace(request.MeetingID))
+        if (string.IsNullOrWhiteSpace(request.MeetingID) || string.IsNullOrEmpty(request.MeetingID))
         {
             throw new ArgumentException("MeetingID cannot be null or whitespace.");
         }
@@ -379,18 +379,26 @@ public class API : IAPI
     #region Recording
 
     #region getRecordings
-
+    /// <summary>
+    /// Retrieves recordings from the API based on the provided request parameters.
+    /// </summary>
+    /// <typeparam name="T">The type of the response object. Must inherit from BaseResponse.</typeparam>
+    /// <param name="request">The request parameters for retrieving recordings.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
+    /// <returns>The response from the API as an object of type T.</returns>
+    /// <exception cref="ArgumentException">If the request parameters are invalid.</exception>
     public async Task<T> GetRecordingsAsync<T>(
-        GetRecordingsRequest request,
+        GetRecordingsRequest? request,
         CancellationToken cancellationToken = default
     )
         where T : BaseResponse
     {
+        // Prepare the parameters for the API request
         var parameters = new Dictionary<string, string>
         {
-            { "meetingID", request.MeetingID ?? string.Empty },
-            { "recordID", request.RecordID ?? string.Empty },
-            { "state", request.State ?? string.Empty },
+            { "meetingID", request?.MeetingID ?? string.Empty },
+            { "recordID", request?.RecordID ?? string.Empty },
+            { "state", request?.State ?? string.Empty },
             { "meta", MetadataConverter.ConverterMetadataToString(request.Meta) ?? string.Empty },
             { "offset", request.Offset.ToString() ?? string.Empty },
             { "limit", request.Limit.ToString() ?? string.Empty }
@@ -453,7 +461,7 @@ public class API : IAPI
         where T : BaseResponse
     {
         // Validate the request parameters
-        if (string.IsNullOrWhiteSpace(request.RecordID))
+        if (string.IsNullOrWhiteSpace(request.RecordID) || string.IsNullOrEmpty(request.RecordID))
         {
             throw new ArgumentException("RecordID cannot be null or whitespace.");
         }
@@ -523,7 +531,7 @@ public class API : IAPI
         where T : BaseResponse
     {
         // Validate the request parameters
-        if (string.IsNullOrWhiteSpace(request.RecordID))
+        if (string.IsNullOrWhiteSpace(request.RecordID) || string.IsNullOrEmpty(request.RecordID))
         {
             throw new ArgumentException("RecordID cannot be null or whitespace.");
         }
