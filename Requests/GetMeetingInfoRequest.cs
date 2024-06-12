@@ -2,6 +2,6 @@
 {
     public class GetMeetingInfoRequest
     {
-        public string MeetingID { get; set; } = string.Empty;
+        public required string MeetingID { get; set; } = string.Empty;
     }
 }

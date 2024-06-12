@@ -12,16 +12,16 @@ namespace BigBlueButtonAPI.Responses;
 public class BaseResponse
 {
     [XmlElement("version")]
-    public string Version { get; set; }
+    public string? Version { get; set; }
 
     [XmlElement("returncode")]
     public ReturnCode ReturnCode { get; set; } = ReturnCode.FAILED;
 
     [XmlElement("messageKey")]
-    public string MessageKey { get; set; } = string.Empty;
+    public string? MessageKey { get; set; }
 
     [XmlElement("message")]
-    public string Message { get; set; } = string.Empty;
+    public string? Message { get; set; }
 }
 
 public static class BaseResponseParser

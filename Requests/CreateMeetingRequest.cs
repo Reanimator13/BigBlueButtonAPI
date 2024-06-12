@@ -8,37 +8,37 @@ public class CreateMeetingRequest
     /// <summary>
     /// [Required] A name for the meeting.
     /// </summary>
-    public string Name { get; set; } = string.Empty;
+    public required string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// [Required] The meeting ID.
     /// </summary>
-    public string MeetingID { get; set; } = string.Empty;
+    public required string MeetingID { get; set; } = string.Empty;
 
     /// <summary>
     ///[DEPRECATED] The password that the join URL can later provide as its password parameter to indicate the user will join as a viewer.
     /// </summary>
-    public string AttendeePW { get; set; } = string.Empty;
+    public string? AttendeePW { get; set; }
 
     /// <summary>
     /// [DEPRECATED] The password that the join URL can later provide as its password parameter to indicate the user will join as a moderator.
     /// </summary>
-    public string ModeratorPW { get; set; } = string.Empty;
+    public string? ModeratorPW { get; set; }
 
     /// <summary>
     /// [Optional] A welcome message that gets displayed on the chat window when the participant joins.
     /// </summary>
-    public string Welcome { get; set; } = string.Empty;
+    public string? Welcome { get; set; }
 
     /// <summary>
     /// [Optional] The dial access number that participants can call in using regular phone.
     /// </summary>
-    public string DialNumber { get; set; } = string.Empty;
+    public string? DialNumber { get; set; }
 
     /// <summary>
     /// [Optional] Voice conference number for the FreeSWITCH voice conference associated with this meeting. This must be a 5-digit number in the range 10000 to 99999.
     /// </summary>
-    public string VoiceBridge { get; set; } = string.Empty;
+    public string? VoiceBridge { get; set; }
 
     /// <summary>
     /// [Optional] The maximum number of participants allowed in the meeting.
@@ -48,7 +48,7 @@ public class CreateMeetingRequest
     /// <summary>
     /// [Optional] The URL to which participants will be redirected after logging out.
     /// </summary>
-    public string LogoutURL { get; set; } = string.Empty;
+    public string? LogoutURL { get; set; }
 
     /// <summary>
     /// [Optional] Whether to record the meeting.
@@ -68,7 +68,7 @@ public class CreateMeetingRequest
     /// <summary>
     /// [Optional] The parent meeting ID.
     /// </summary>
-    public string ParentMeetingID { get; set; } = string.Empty;
+    public string? ParentMeetingID { get; set; }
 
     /// <summary>
     /// [Optional] The meeting sequence number.
@@ -103,7 +103,7 @@ public class CreateMeetingRequest
     /// <summary>
     /// [Optional] Display a message to all moderators in the public chat.
     /// </summary>
-    public string ModeratorOnlyMessage { get; set; } = string.Empty;
+    public string? ModeratorOnlyMessage { get; set; }
 
     /// <summary>
     /// [Optional] Whether to auto start recording.
@@ -112,10 +112,10 @@ public class CreateMeetingRequest
     public bool? AllowStartStopRecording { get; set; }
     public bool? WebcamsOnlyForModerator { get; set; }
     public bool? LockSettingsHideViewersCursor { get; set; }
-    public string Logo { get; set; }
-    public string BannerText { get; set; }
-    public string BannerColor { get; set; }
-    public string Copyright { get; set; }
+    public string? Logo { get; set; }
+    public string? BannerText { get; set; }
+    public string? BannerColor { get; set; }
+    public string? Copyright { get; set; }
     public bool? MuteOnStart { get; set; }
     public bool? AllowModsToUnmuteUsers { get; set; }
     public bool? KeepEvents { get; set; }
@@ -129,7 +129,7 @@ public class CreateMeetingRequest
     public bool? LockSettingsLockedLayout { get; set; }
     public bool? LockSettingsLockOnJoin { get; set; }
     public bool? LockSettingsLockOnJoinConfigurable { get; set; }
-    public string GuestPolicy { get; set; }
+    public string? GuestPolicy { get; set; }
     public int? EndWhenNoModeratorDelayInMinutes { get; set; }
     public MeetingLayout MeetingLayout { get; set; } = MeetingLayout.SMART_LAYOUT;
     public bool? LearningDashboardEnabled { get; set; }
@@ -142,13 +142,13 @@ public class CreateMeetingRequest
     public int? MeetingExpireIfNoUserJoinedInMinutes { get; set; }
     public int? MeetingExpireWhenLastUserLeftInMinutes { get; set; }
     public List<Group>? Groups { get; set; }
-    public string DisabledFeatures { get; set; }
-    public string DisabledFeaturesExclude { get; set; }
+    public string? DisabledFeatures { get; set; }
+    public string? DisabledFeaturesExclude { get; set; }
     public bool? PreUploadedPresentationOverrideDefault { get; set; }
     public bool? NotifyRecordingIsOn { get; set; }
-    public string PresentationUploadExternalUrl { get; set; }
-    public string PresentationUploadExternalDescription { get; set; }
+    public string? PresentationUploadExternalUrl { get; set; }
+    public string? PresentationUploadExternalDescription { get; set; }
     public bool? RecordFullDurationMedia { get; set; }
-    public string PreUploadedPresentation { get; set; }
-    public string PreUploadedPresentationName { get; set; }
+    public string? PreUploadedPresentation { get; set; }
+    public string? PreUploadedPresentationName { get; set; }
 }
