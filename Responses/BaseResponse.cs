@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Xml.Serialization;
+using BigBlueButtonAPI.Enums;
 using BigBlueButtonAPI.Utils;
 
 namespace BigBlueButtonAPI.Responses;

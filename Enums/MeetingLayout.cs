@@ -1,4 +1,4 @@
-﻿namespace BigBlueButtonAPI.Requests;
+﻿namespace BigBlueButtonAPI.Enums;
 
 public enum MeetingLayout
 {

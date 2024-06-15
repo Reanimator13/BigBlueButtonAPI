@@ -1,3 +1,5 @@
+using BigBlueButtonAPI.Enums;
+
 namespace BigBlueButtonAPI.Requests;
 
 public class JoinMeetingRequest
@@ -5,7 +7,7 @@ public class JoinMeetingRequest
     public string FullName { get; set; }
     public string MeetingID { get; set; }
     public string Password { get; set; }
-    public string Role { get; set; }
+    public required Role Role { get; set; }
     public string CreateTime { get; set; }
     public string UserID { get; set; }
     public string WebVoiceConf { get; set; }

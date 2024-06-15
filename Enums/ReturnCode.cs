@@ -1,4 +1,4 @@
-﻿namespace BigBlueButtonAPI.Responses;
+﻿namespace BigBlueButtonAPI.Enums;
 
 public enum ReturnCode
 {

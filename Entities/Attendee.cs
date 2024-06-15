@@ -1,4 +1,5 @@
 ﻿using System.Xml.Serialization;
+using BigBlueButtonAPI.Enums;
 
 namespace BigBlueButtonAPI.Responses;
 

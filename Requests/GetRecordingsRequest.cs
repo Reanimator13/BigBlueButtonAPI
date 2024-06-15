@@ -1,23 +1,27 @@
 ﻿using BigBlueButtonAPI.Entities;
+using BigBlueButtonAPI.Enums;
 
 namespace BigBlueButtonAPI.Requests
 {
+    /// <summary>
+    /// Get a list of recordings. Support for pagination was added in 2.6.
+    /// </summary>
     public class GetRecordingsRequest
     {
         /// <summary>
-        /// A meeting ID for get the recordings. It can be a set of meetingIDs separate by commas. If the meeting ID is not specified, it will get ALL the recordings. If a recordID is specified, the meetingID is ignored.
+        /// [Optional] A meeting ID for get the recordings.
         /// </summary>
-        public string MeetingID { get; set; } = string.Empty;
+        public string? MeetingID { get; set; }
 
         /// <summary>
-        /// A record ID for get the recordings. It can be a set of recordIDs separate by commas. If the record ID is not specified, it will use meeting ID as the main criteria. If neither the meeting ID is specified, it will get ALL the recordings. The recordID can also be used as a wildcard by including only the first characters in the string.
+        /// [Optional] A record ID for get the recordings.
         /// </summary>
-        public string RecordID { get; set; } = string.Empty;
+        public string? RecordID { get; set; }
 
         /// <summary>
-        /// Since version 1.0 the recording has an attribute that shows a state that Indicates if the recording is [processing|processed|published|unpublished|deleted]. The parameter state can be used to filter results. It can be a set of states separate by commas. If it is not specified only the states [published|unpublished] are considered (same as in previous versions). If it is specified as “any”, recordings in all states are included.
+        /// [Optional] Since version 1.0 the recording has an attribute that shows a state that Indicates if the recording is [processing|processed|published|unpublished|deleted]. The parameter state can be used to filter results. It can be a set of states separate by commas. If it is not specified only the states [published|unpublished] are considered (same as in previous versions). If it is specified as “any”, recordings in all states are included.
         /// </summary>
-        public string State { get; set; } = string.Empty;
+        public State? State { get; set; }
 
         /// <summary>
         /// You can pass one or more metadata values to filter the recordings returned.

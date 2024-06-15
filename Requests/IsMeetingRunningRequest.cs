@@ -1,10 +1,13 @@
 ﻿namespace BigBlueButtonAPI.Requests
 {
+    /// <summary>
+    /// Checks whether if a specified meeting is running.
+    /// </summary>
     public class IsMeetingRunningRequest
     {
         /// <summary>
-        /// This call enables you to simply check on whether or not a meeting is running by looking it up with your meeting ID.
+        /// [Required] The meeting ID that identifies the meeting you are attempting to check on.
         /// </summary>
-        public string MeetingID { get; set; } = string.Empty;
+        public required string MeetingID { get; set; } = string.Empty;
     }
 }

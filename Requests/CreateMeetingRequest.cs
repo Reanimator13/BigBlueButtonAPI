@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
 using BigBlueButtonAPI.Entities;
+using BigBlueButtonAPI.Enums;
 
 namespace BigBlueButtonAPI.Requests;
 
+/// <summary>
+/// // Creates a new Meeting.
+/// </summary>
 public class CreateMeetingRequest
 {
     /// <summary>
@@ -109,10 +113,27 @@ public class CreateMeetingRequest
     /// [Optional] Whether to auto start recording.
     /// </summary>
     public bool? AutoStartRecording { get; set; } = false;
-    public bool? AllowStartStopRecording { get; set; }
+
+    /// <summary>
+    /// [Optional] Allow the user to start/stop recording.
+    /// </summary>
+    public bool? AllowStartStopRecording { get; set; } = false;
+
+    /// <summary>
+    /// [Optional] Setting webcamsOnlyForModerator=true will cause all webcams shared by viewers during this meeting to only appear for moderators. (added 1.1)
+    /// </summary>
     public bool? WebcamsOnlyForModerator { get; set; }
-    public bool? LockSettingsHideViewersCursor { get; set; }
+
+    /// <summary>
+    /// [Optional] Setting to true will prevent viewers to see other viewers cursor when multi-user whiteboard is on. (added 2.5)
+    /// </summary>
+    public bool? LockSettingsHideViewersCursor { get; set; } = false;
+
+    /// <summary>
+    /// [Optional]
+    /// </summary>
     public string? Logo { get; set; }
+
     public string? BannerText { get; set; }
     public string? BannerColor { get; set; }
     public string? Copyright { get; set; }

@@ -10,53 +10,53 @@ public interface IAPI
     Task<BaseResponse> GetVersionAsync(CancellationToken cancellationToken);
 
     Task<T> CreateMeetingAsync<T>(CreateMeetingRequest request, CancellationToken cancellationToken)
-        where T : BaseResponse;
+        where T : CreateMeetingResponse;
 
     Task<T> JoinMeetingAsync<T>(JoinMeetingRequest request, CancellationToken cancellationToken)
-        where T : BaseResponse;
+        where T : JoinMeetingResponse;
 
     Task<T> EndMeetingAsync<T>(EndMeetingRequest request, CancellationToken cancellationToken)
-        where T : BaseResponse;
+        where T : EndMeetingResponse;
 
     Task<T> GetMeetingsAsync<T>(CancellationToken cancellationToken)
-        where T : BaseResponse;
+        where T : GetMeetingsResponse;
 
     Task<T> IsMeetingRunningAsync<T>(
         IsMeetingRunningRequest request,
         CancellationToken cancellationToken
     )
-        where T : BaseResponse;
+        where T : IsMeetingRunningResponse;
 
     Task<T> GetMeetingInfoAsync<T>(
         GetMeetingInfoRequest request,
         CancellationToken cancellationToken
     )
-        where T : BaseResponse;
+        where T : GetMeetingInfoResponse;
 
     Task<T> GetRecordingsAsync<T>(GetRecordingsRequest request, CancellationToken cancellationToken)
-        where T : BaseResponse;
+        where T : GetRecordingsResponse;
 
     Task<T> PublishRecordingsAsync<T>(
         PublishRecordingsRequest request,
         CancellationToken cancellationToken
     )
-        where T : BaseResponse;
+        where T : PublishRecordingsResponse;
 
     Task<T> DeleteRecordingsAsync<T>(
         DeleteRecordingsRequest request,
         CancellationToken cancellationToken
     )
-        where T : BaseResponse;
+        where T : DeleteRecordingsResponse;
 
     Task<T> UpdateRecordingsAsync<T>(
         UpdateRecordingsRequest request,
         CancellationToken cancellationToken
     )
-        where T : BaseResponse;
+        where T : UpdateRecordingsResponce;
 
     Task<T> GetRecordingTextTracksAsync<T>(
         GetRecordingTextTracksRequest request,
         CancellationToken cancellationToken
     )
-        where T : BaseResponse;
+        where T : GetRecordingTextTracksResponse;
 }

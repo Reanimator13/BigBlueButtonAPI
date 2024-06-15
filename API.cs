@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using BigBlueButtonAPI.Enums;
 using BigBlueButtonAPI.Requests;
 using BigBlueButtonAPI.Responses;
 using BigBlueButtonAPI.Utils;
+using Newtonsoft.Json;
 
 namespace BigBlueButtonAPI;
 
@@ -22,7 +25,6 @@ public class API : IAPI
     {
         if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(secretKey))
             throw new ArgumentException("Url and SecretKey cannot be null or whitespace.");
-
         _url = url.EndsWith("/") ? url : url + "/";
         _secretKey = secretKey;
     }
@@ -35,7 +37,9 @@ public class API : IAPI
     /// <returns></returns>
     public async Task<BaseResponse> GetVersionAsync(CancellationToken cancellationToken = default)
     {
-        return BaseResponseParser.Parse<BaseResponse>(await HttpGetAsync(_url, cancellationToken));
+        return BaseResponseParser.Parse<BaseResponse>(
+            await new HttpClient().GetStringAsync(_url, cancellationToken)
+        );
     }
 
     #endregion
@@ -55,7 +59,7 @@ public class API : IAPI
         CreateMeetingRequest request,
         CancellationToken cancellationToken = default
     )
-        where T : BaseResponse
+        where T : CreateMeetingResponse
     {
         // Validate the request parameters
         if (string.IsNullOrWhiteSpace(request.Name) || string.IsNullOrWhiteSpace(request.MeetingID))
@@ -89,7 +93,7 @@ public class API : IAPI
                 request.BreakoutRoomsPrivateChatEnabled.ToString() ?? string.Empty
             },
             { "breakoutRoomsRecord", request.BreakoutRoomsRecord.ToString() ?? string.Empty },
-            { "meta", MetadataConverter.ConverterMetadataToString(request.Meta) ?? string.Empty },
+            // { "meta", MetadataConverter.ConverterMetadataToString(request.Meta) ?? string.Empty },
             { "moderatorOnlyMessage", request.ModeratorOnlyMessage ?? string.Empty },
             { "autoStartRecording", request.AutoStartRecording.ToString() ?? string.Empty },
             {
@@ -170,7 +174,7 @@ public class API : IAPI
                 "meetingExpireWhenLastUserLeftInMinutes",
                 request.MeetingExpireWhenLastUserLeftInMinutes.ToString() ?? string.Empty
             },
-            { "groups", Json.GroupsToJsonString(request.Groups) ?? string.Empty },
+            { "groups", JsonConvert.SerializeObject(request.Groups) ?? string.Empty },
             { "logo", request.Logo ?? string.Empty },
             { "disabledFeatures", request.DisabledFeatures ?? string.Empty },
             { "disabledFeaturesExclude", request.DisabledFeaturesExclude ?? string.Empty },
@@ -213,14 +217,15 @@ public class API : IAPI
         JoinMeetingRequest request,
         CancellationToken cancellationToken = default
     )
-        where T : BaseResponse
+        where T : JoinMeetingResponse
     {
         if (
             string.IsNullOrWhiteSpace(request.FullName)
             || string.IsNullOrWhiteSpace(request.MeetingID)
+            || string.IsNullOrWhiteSpace(request.Role.ToString())
         )
         {
-            throw new ArgumentException("FullName and MeetingID cannot be null or whitespace.");
+            throw new ArgumentException("FullName, MeetingID and Role are required.");
         }
 
         // Prepare the parameters for the API request
@@ -229,9 +234,9 @@ public class API : IAPI
             // Required parameters
             { "fullName", request.FullName },
             { "meetingID", request.MeetingID },
+            { "role", ((Role)request.Role).ToString() },
             // Optional parameters
             { "password", request.Password ?? string.Empty },
-            { "role", request.Role ?? string.Empty },
             { "createTime", request.CreateTime ?? string.Empty },
             { "userID", request.UserID ?? string.Empty },
             { "webVoiceConf", request.WebVoiceConf ?? string.Empty },
@@ -256,13 +261,13 @@ public class API : IAPI
     /// <typeparam name="T">The type of the response object.</typeparam>
     /// <param name="request">The request parameters for the meeting.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>The response from the API.</returns>
+    /// <returns cref="EndMeetingResponse">The response from the API.</returns>
     /// <exception cref="ArgumentException">If the MeetingID is null or whitespace.</exception>
     public async Task<T> EndMeetingAsync<T>(
         EndMeetingRequest request,
         CancellationToken cancellationToken = default
     )
-        where T : BaseResponse
+        where T : EndMeetingResponse
     {
         // Validate the request parameters
         if (string.IsNullOrWhiteSpace(request.MeetingID))
@@ -302,7 +307,7 @@ public class API : IAPI
         IsMeetingRunningRequest request,
         CancellationToken cancellationToken = default
     )
-        where T : BaseResponse
+        where T : IsMeetingRunningResponse
     {
         // Validate the request parameters
         if (string.IsNullOrWhiteSpace(request.MeetingID) || string.IsNullOrEmpty(request.MeetingID))
@@ -330,14 +335,16 @@ public class API : IAPI
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
     /// <returns>The response from the API.</returns>
     public async Task<T> GetMeetingsAsync<T>(CancellationToken cancellationToken = default)
-        where T : BaseResponse
+        where T : GetMeetingsResponse
     {
         // Send the API request and return the response
-        return await GetResponseAsync<T>(
-            "getMeetings",
-            new Dictionary<string, string>(),
-            cancellationToken
-        );
+        return await GetResponseAsync<T>("getMeetings", [], cancellationToken);
+    }
+
+    public async Task<T> PostMeetingsAsync<T>(CancellationToken cancellationToken = default)
+        where T : GetMeetingsResponse
+    {
+        return await PostResponseAsync<T>("getMeetings", [], cancellationToken);
     }
     #endregion
 
@@ -354,7 +361,7 @@ public class API : IAPI
         GetMeetingInfoRequest request,
         CancellationToken cancellationToken = default
     )
-        where T : BaseResponse
+        where T : GetMeetingInfoResponse
     {
         // Validate the request parameters
         if (string.IsNullOrWhiteSpace(request.MeetingID))
@@ -388,20 +395,21 @@ public class API : IAPI
     /// <returns>The response from the API as an object of type T.</returns>
     /// <exception cref="ArgumentException">If the request parameters are invalid.</exception>
     public async Task<T> GetRecordingsAsync<T>(
-        GetRecordingsRequest? request,
+        GetRecordingsRequest? request = null,
         CancellationToken cancellationToken = default
     )
-        where T : BaseResponse
+        where T : GetRecordingsResponse
     {
         // Prepare the parameters for the API request
         var parameters = new Dictionary<string, string>
         {
             { "meetingID", request?.MeetingID ?? string.Empty },
             { "recordID", request?.RecordID ?? string.Empty },
-            { "state", request?.State ?? string.Empty },
-            { "meta", MetadataConverter.ConverterMetadataToString(request.Meta) ?? string.Empty },
-            { "offset", request.Offset.ToString() ?? string.Empty },
-            { "limit", request.Limit.ToString() ?? string.Empty }
+            { "state", ((State?)request?.State)?.ToString() ?? string.Empty },
+            // TODO: Understanding Metadata
+            //{ "meta", MetadataConverter.ConverterMetadataToString(request?.Meta) ?? string.Empty },
+            { "offset", request?.Offset.ToString() ?? string.Empty },
+            { "limit", request?.Limit.ToString() ?? string.Empty }
         };
 
         return await GetResponseAsync<T>("getRecordings", parameters, cancellationToken);
@@ -420,7 +428,7 @@ public class API : IAPI
         PublishRecordingsRequest request,
         CancellationToken cancellationToken = default
     )
-        where T : BaseResponse
+        where T : PublishRecordingsResponse
     {
         // Validate the request parameters
         if (
@@ -453,24 +461,24 @@ public class API : IAPI
     /// <param name="request">The request parameters for deleting recordings.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The response from the API.</returns>
-    /// <exception cref="ArgumentException">If the RecordID is null or whitespace.</exception>
+    /// <exception cref="ArgumentException">There is no RecordID to delete.</exception>
     public async Task<T> DeleteRecordingsAsync<T>(
         DeleteRecordingsRequest request,
         CancellationToken cancellationToken = default
     )
-        where T : BaseResponse
+        where T : DeleteRecordingsResponse
     {
         // Validate the request parameters
-        if (string.IsNullOrWhiteSpace(request.RecordID) || string.IsNullOrEmpty(request.RecordID))
+        if (request.RecordID.Count == 0)
         {
-            throw new ArgumentException("RecordID cannot be null or whitespace.");
+            throw new ArgumentException("There is no RecordID to delete.");
         }
 
         // Prepare the parameters for the API request
         var parameters = new Dictionary<string, string>
         {
             // Required parameters
-            { "recordID", request.RecordID }
+            { "recordID", string.Join(",", request.RecordID) }
         };
 
         // Send the API request and return the response
@@ -491,7 +499,7 @@ public class API : IAPI
         UpdateRecordingsRequest request,
         CancellationToken cancellationToken = default
     )
-        where T : BaseResponse
+        where T : UpdateRecordingsResponce
     {
         // Validate the request parameters
         if (string.IsNullOrWhiteSpace(request.RecordID))
@@ -505,7 +513,8 @@ public class API : IAPI
             // Required parameters
             { "recordID", request.RecordID },
             // Optional parameters
-            { "meta", MetadataConverter.ConverterMetadataToString(request.Meta) ?? string.Empty }
+            // TODO: Understanding Metadata
+            //{ "meta", MetadataConverter.ConverterMetadataToString(request.Meta) ?? string.Empty }
         };
 
         // Send the API request and return the response
@@ -528,7 +537,7 @@ public class API : IAPI
         GetRecordingTextTracksRequest request,
         CancellationToken cancellationToken = default
     )
-        where T : BaseResponse
+        where T : GetRecordingTextTracksResponse
     {
         // Validate the request parameters
         if (string.IsNullOrWhiteSpace(request.RecordID) || string.IsNullOrEmpty(request.RecordID))
@@ -548,23 +557,6 @@ public class API : IAPI
     #endregion
 
     #region Private Methods
-    /// <summary>
-    /// Asynchronously sends a GET request to the specified URL and returns the response as a string.
-    /// </summary>
-    /// <param name="url">The URL to send the GET request to.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the response from the server.</returns>
-    private static async Task<string> HttpGetAsync(
-        string url,
-        CancellationToken cancellationToken = default
-    )
-    {
-        // Create an instance of the HttpClient class to send the GET request.
-        using var httpClient = new HttpClient();
-
-        // Send a GET request to the specified URL and get the response.
-        return await httpClient.GetStringAsync(url, cancellationToken);
-    }
-
     /// <summary>
     /// Generates a checksum for the given API call name and parameters using the secret key.
     /// </summary>
@@ -597,17 +589,119 @@ public class API : IAPI
         where T : BaseResponse
     {
         // Build the query string by adding the parameters and the checksum
+        string fullUrl = FullUrl(apiCallName, parameters);
+
+        // Send a GET request to the BigBlueButton API and get the response
+        return await HttpGetAsync<T>(fullUrl, cancellationToken);
+    }
+
+    private async Task<T> PostResponseAsync<T>(
+        string apiCallName,
+        Dictionary<string, string> parameters,
+        CancellationToken cancellationToken = default
+    )
+        where T : BaseResponse
+    {
+        // Build the query string by adding the parameters and the checksum
+
+
+        // Construct the full URL by appending the API call name and the query string
+        var fullUrl = FullUrl(apiCallName, parameters);
+
+        return await HttpPostAsync<T>(fullUrl, cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously sends a GET request to the specified URL and returns the response of type T.
+    /// </summary>
+    /// <typeparam name="T">The type of the response object to return.</typeparam>
+    /// <param name="url">The URL to send the GET request to.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the response of type T.</returns>
+    private static async Task<T> HttpGetAsync<T>(
+        string url,
+        CancellationToken cancellationToken = default
+    )
+        where T : BaseResponse
+    {
+        HttpClientHandler clientHandler = new HttpClientHandler();
+        clientHandler.ServerCertificateCustomValidationCallback = (
+            sender,
+            cert,
+            chain,
+            sslPolicyErrors
+        ) =>
+        {
+            return true;
+        };
+
+        using var httpClient = new HttpClient(clientHandler);
+        // using var httpClient = new HttpClient();
+        var response = await httpClient.GetAsync(url, cancellationToken);
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        if (typeof(T) == typeof(string))
+            return (T)(object)content;
+
+        if (content.StartsWith("<"))
+        {
+            return BaseResponseParser.Parse<T>(content);
+        }
+        else
+        {
+            return JsonConvert.DeserializeObject<JsonWrapperResponse<T>>(content).Response;
+        }
+    }
+
+    private static async Task<T> HttpPostAsync<T>(
+        string url,
+        CancellationToken cancellationToken = default
+    )
+        where T : BaseResponse
+    {
+        HttpClientHandler clientHandler = new HttpClientHandler();
+        clientHandler.ServerCertificateCustomValidationCallback = (
+            sender,
+            cert,
+            chain,
+            sslPolicyErrors
+        ) =>
+        {
+            return true;
+        };
+
+        using var httpClient = new HttpClient(clientHandler);
+        // using var httpClient = new HttpClient();
+        var formDataBytes = System.Text.Encoding.UTF8.GetBytes(url);
+        using (var data = new ByteArrayContent(formDataBytes))
+        {
+            data.Headers.ContentType = new MediaTypeHeaderValue(
+                "application/x-www-form-urlencoded"
+            );
+            var response = await httpClient.PostAsync(url, data, cancellationToken);
+            var content = await response.Content.ReadAsStringAsync();
+            if (typeof(T) == typeof(string))
+                return (T)(object)content;
+
+            if (content.StartsWith("<"))
+            {
+                return BaseResponseParser.Parse<T>(content);
+            }
+            else
+            {
+                return JsonConvert.DeserializeObject<JsonWrapperResponse<T>>(content).Response;
+            }
+        }
+    }
+
+    private string FullUrl(string apiCallName, Dictionary<string, string> parameters)
+    {
         var queryBuilder = new QueryStringBuilder(parameters);
         queryBuilder.Add("checksum", GenerateChecksum(apiCallName, queryBuilder.ToString()));
 
         // Construct the full URL by appending the API call name and the query string
         var fullUrl = $"{_url}{apiCallName}?{queryBuilder}";
-
-        // Send a GET request to the BigBlueButton API and get the response
-        var response = await HttpGetAsync(fullUrl, cancellationToken);
-
-        // Parse the response into the specified type and return it
-        return BaseResponseParser.Parse<T>(response);
+        return fullUrl;
     }
     #endregion
 }

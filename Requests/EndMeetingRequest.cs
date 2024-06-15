@@ -1,5 +1,8 @@
 ﻿namespace BigBlueButtonAPI.Requests;
 
+/// <summary>
+/// Ends a Meeting.
+/// </summary>
 public class EndMeetingRequest
 {
     /// <summary>
@@ -10,5 +13,5 @@ public class EndMeetingRequest
     /// <summary>
     /// [DEPRECATED] The moderator password for this meeting. You can not end a meeting using the attendee password.
     /// </summary>
-    public string? Password { get; set; } = string.Empty;
+    public string? Password { get; set; }
 }
