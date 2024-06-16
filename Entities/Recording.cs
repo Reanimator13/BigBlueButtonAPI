@@ -36,7 +36,7 @@ public class Recording
     public int Participants { get; set; }
 
     [XmlElement("metadata")]
-    public Metadata Meta { get; set; }
+    public Metadata? Meta { get; set; }
 
     [XmlArray("playback")]
     [XmlArrayItem("format")]

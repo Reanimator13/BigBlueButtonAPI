@@ -2,7 +2,7 @@
 
 namespace BigBlueButtonAPI.Responses;
 
-public class UpdateRecordingsResponce : BaseResponse
+public class UpdateRecordingsResponse : BaseResponse
 {
     [XmlElement("updated")]
     public bool Updated { get; set; }
